@@ -1,4 +1,38 @@
-	
+
+service: get-exchange-pairs
+frameworkVersion: '2'
+
+functions:
+  create:
+    handler: getpairs.get_pairs
+    events:
+      - httpApi:
+          path: /todos
+          method: post
+
+provider:
+  name: aws
+  runtime: python3.8
+  environment:
+    DYNAMODB_TABLE: ${self:service}-${sls:stage}
+  httpApi:
+    cors: true
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource: "arn:aws:dynamodb:${aws:region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+
+
+
+
 custom:
   pythonRequirements:
     dockerizePip: true

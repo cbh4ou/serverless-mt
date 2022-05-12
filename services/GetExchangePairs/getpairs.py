@@ -6,7 +6,7 @@ from sqs_handler import *
 from random import shuffle
 import uuid
 
-def lambda_handler(event, context):
+def get_pairs(event, context):
 
     results = run()
     merged_pairs = []
